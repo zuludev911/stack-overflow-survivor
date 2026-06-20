@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { EventCategory } from '../types';
-import { Gender } from '../data/sprites';
+import { Gender, SpriteAnim, AccessoryId } from '../data/sprites';
 import CharacterSprite from './CharacterSprite';
-import { SpriteAnim } from '../data/sprites';
 
 type Props = {
   gender: Gender;
   animation: SpriteAnim;
   category: EventCategory;
+  accessory?: AccessoryId | null;
 };
 
 const SCENE: Record<EventCategory, { bg: string; accent: string; label: string; deco: string }> = {
@@ -20,7 +20,7 @@ const SCENE: Record<EventCategory, { bg: string; accent: string; label: string; 
   existential: { bg: '#050510', accent: '#7c4dff', label: 'EXISTENCIAL', deco: '🤖' },
 };
 
-export default function ScenePanel({ gender, animation, category }: Props) {
+export default function ScenePanel({ gender, animation, category, accessory }: Props) {
   const scene = SCENE[category];
 
   return (
@@ -41,7 +41,7 @@ export default function ScenePanel({ gender, animation, category }: Props) {
 
       {/* Character */}
       <View style={styles.characterWrapper}>
-        <CharacterSprite gender={gender} animation={animation} size={110} />
+        <CharacterSprite gender={gender} animation={animation} accessory={accessory} size={110} />
       </View>
 
       {/* Floor line */}

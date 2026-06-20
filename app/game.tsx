@@ -12,8 +12,8 @@ import {
 import { Run, GameEvent, Choice, StatDelta } from '../src/types';
 import StatsBar from '../src/components/StatsBar';
 import ScenePanel from '../src/components/ScenePanel';
-import { loadGender } from '../src/store/characterStore';
-import { Gender, SpriteAnim } from '../src/data/sprites';
+import { loadGender, loadAccessory } from '../src/store/characterStore';
+import { Gender, SpriteAnim, AccessoryId } from '../src/data/sprites';
 
 const CATEGORY_EMOJI: Record<string, string> = {
   crisis: '🔥', client: '👔', technical: '💀',
@@ -30,6 +30,7 @@ export default function GameScreen() {
   const [run, setRun] = useState<Run | null>(null);
   const [event, setEvent] = useState<GameEvent | null>(null);
   const [gender, setGender] = useState<Gender>('boy');
+  const [accessory, setAccessory] = useState<AccessoryId | null>(null);
   const [phase, setPhase] = useState<Phase>('idle');
   const [spriteAnim, setSpriteAnim] = useState<SpriteAnim>('idle');
   const [followUp, setFollowUp] = useState<string | null>(null);
@@ -40,11 +41,12 @@ export default function GameScreen() {
   const nextAnim2  = useRef(new Animated.Value(0)).current; // triggers navigation
 
   useEffect(() => {
-    Promise.all([loadCurrentRun(), loadGender()]).then(([r, g]) => {
+    Promise.all([loadCurrentRun(), loadGender(), loadAccessory()]).then(([r, g, acc]) => {
       if (!r) { router.replace('/'); return; }
       setRun(r);
       setEvent(pickEvent(r));
       if (g) setGender(g);
+      setAccessory(acc);
     });
   }, []);
 
@@ -157,7 +159,7 @@ export default function GameScreen() {
         <StatsBar stats={run.stats} week={run.week} />
 
         {/* Character scene */}
-        <ScenePanel gender={gender} animation={spriteAnim} category={event.category} />
+        <ScenePanel gender={gender} animation={spriteAnim} category={event.category} accessory={accessory} />
 
         {/* Working overlay */}
         {phase === 'working' && (

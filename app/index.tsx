@@ -64,6 +64,9 @@ export default function HomeScreen() {
           <Pressable style={styles.secondaryBtn} onPress={() => router.push('/achievements')}>
             <Text style={styles.secondaryBtnText}>🏅 Logros</Text>
           </Pressable>
+          <Pressable style={styles.secondaryBtn} onPress={() => router.push('/wardrobe')}>
+            <Text style={styles.secondaryBtnText}>👕 Ropa</Text>
+          </Pressable>
         </View>
 
         <Text style={styles.hint}>Basado en eventos reales de desarrolladores reales.</Text>
