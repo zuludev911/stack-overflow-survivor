@@ -511,4 +511,544 @@ export const EVENTS: GameEvent[] = [
       },
     ],
   },
+
+  // ─── CRISIS (más) ─────────────────────────────────────────
+  {
+    id: 'crisis_wrong_env',
+    category: 'crisis',
+    title: 'Hiciste deploy a producción en vez de staging.',
+    body: 'El comando era casi idéntico. Todos los usuarios están viendo los datos de prueba. Uno de esos datos de prueba dice "CLIENTE TONTO".',
+    weight: 6,
+    weekMin: 2,
+    choices: [
+      {
+        id: 'a',
+        text: 'Rollback inmediato y avisar al equipo',
+        effects: { stress: +20, energy: -15, skill: +5 },
+        followUpText: 'Estuvo caído 8 minutos. El "CLIENTE TONTO" no lo vio. Probablemente.',
+      },
+      {
+        id: 'b',
+        text: 'Intentar corregir los datos en vivo',
+        effects: { stress: +35, energy: -25, money: -10 },
+        followUpText: 'Lo empeoraste. El rollback fue inevitable igual.',
+      },
+      {
+        id: 'c',
+        text: 'Pretender que fue un "test de resiliencia planificado"',
+        effects: { stress: +10, skill: -10 },
+        followUpText: 'El CEO preguntó por el documento del test. No existía.',
+      },
+    ],
+  },
+  {
+    id: 'crisis_deleted_branch',
+    category: 'crisis',
+    title: 'Borraste la rama main del repositorio.',
+    body: '`git push --force` parecía buena idea en ese momento. Ahora el repo está vacío.',
+    weight: 4,
+    weekMin: 1,
+    choices: [
+      {
+        id: 'a',
+        text: 'Buscar en el historial local cómo recuperarlo',
+        effects: { stress: +25, energy: -20, skill: +15 },
+        requiresMinStat: { skill: 45 },
+        followUpText: 'git reflog al rescate. Perdiste 2 commits. Pudo ser peor.',
+      },
+      {
+        id: 'b',
+        text: 'Confesar inmediatamente al equipo',
+        effects: { stress: +30, money: -10 },
+        followUpText: 'El equipo tenía clones locales. Recuperaron todo. La vergüenza, no.',
+      },
+      {
+        id: 'c',
+        text: 'Esperar a que alguien más lo note',
+        effects: { stress: +40, money: -20, skill: -10 },
+        followUpText: 'Lo notaron en el standup. Todos sabían que fuiste tú.',
+      },
+    ],
+  },
+  {
+    id: 'crisis_infinite_loop',
+    category: 'crisis',
+    title: 'Tu código entró en un loop infinito en producción.',
+    body: 'El servidor lleva 20 minutos al 100% de CPU. Los logs dicen "request received" 400.000 veces.',
+    weight: 6,
+    choices: [
+      {
+        id: 'a',
+        text: 'Matar el proceso y hacer hotfix',
+        effects: { stress: +20, energy: -15, skill: +10 },
+        followUpText: 'Servicio restaurado en 15 minutos. El fix fue una sola línea.',
+      },
+      {
+        id: 'b',
+        text: 'Escalar más servidores para aguantar la carga',
+        effects: { stress: +10, money: -20 },
+        followUpText: 'La factura de AWS de ese día fue épica.',
+      },
+      {
+        id: 'c',
+        text: 'Reiniciar todo y rezar',
+        effects: { stress: +15, energy: -10, skill: -5 },
+        followUpText: 'Funcionó. El bug sigue en el código.',
+      },
+    ],
+  },
+
+  // ─── CLIENT (más) ──────────────────────────────────────────
+  {
+    id: 'client_unpaid_invoice',
+    category: 'client',
+    title: 'El cliente lleva 60 días sin pagar.',
+    body: 'La app está funcionando perfectamente en producción. Sus usuarios la usan todos los días. Tu cuenta bancaria, no tanto.',
+    weight: 7,
+    weekMin: 2,
+    choices: [
+      {
+        id: 'a',
+        text: 'Mandar email formal con ultimátum',
+        effects: { stress: +15, money: +20, skill: +5 },
+        followUpText: 'Pagaron al día siguiente. La relación sobrevivió.',
+      },
+      {
+        id: 'b',
+        text: 'Desactivar el acceso hasta recibir el pago',
+        effects: { stress: +20, money: +30, skill: -5 },
+        followUpText: 'Pagaron en 2 horas. También amenazaron con demandarte.',
+      },
+      {
+        id: 'c',
+        text: 'Seguir esperando para no crear conflicto',
+        effects: { stress: +10, money: -10 },
+        followUpText: 'Pagaron a los 90 días. Con un descuento que tú no pediste.',
+      },
+    ],
+  },
+  {
+    id: 'client_copy_competitor',
+    category: 'client',
+    title: '"Quiero exactamente esto, pero diferente."',
+    body: 'El cliente te mandó 3 screenshots del producto del competidor y dice que quiere "algo así pero que sea nuestro".',
+    weight: 7,
+    choices: [
+      {
+        id: 'a',
+        text: 'Pedirle que defina qué es "nuestro"',
+        effects: { stress: +10, skill: +5, energy: -5 },
+        followUpText: 'La reunión duró 2 horas. Saliste con un brief claro.',
+      },
+      {
+        id: 'b',
+        text: 'Copiar el diseño y cambiar los colores',
+        effects: { stress: -5, money: +5, skill: -10 },
+        followUpText: 'El cliente quedó feliz. Tu portafolio, menos.',
+      },
+      {
+        id: 'c',
+        text: 'Proponer algo completamente diferente y original',
+        effects: { stress: +15, energy: -10, skill: +15, money: -5 },
+        requiresMinStat: { skill: 50 },
+        followUpText: 'Le encantó. Ahora te pide que lo cambies "un poco".',
+      },
+    ],
+  },
+  {
+    id: 'client_last_minute_meeting',
+    category: 'client',
+    title: 'Reunión sorpresa con el cliente en 30 minutos.',
+    body: 'No hay agenda. No hay contexto. Solo un mensaje: "¿Pueden hacer una llamada ahorita?"',
+    weight: 8,
+    choices: [
+      {
+        id: 'a',
+        text: 'Prepararte rápido con lo que puedas',
+        effects: { stress: +15, energy: -10, skill: +5 },
+        followUpText: 'Solo querían mostrar el producto a alguien. Fue fácil.',
+      },
+      {
+        id: 'b',
+        text: 'Entrar a la reunión sin preparación',
+        effects: { stress: +20, energy: -5 },
+        followUpText: 'Te preguntaron algo que no sabías. "Te lo confirmo después."',
+      },
+      {
+        id: 'c',
+        text: 'Posponer para el día siguiente con agenda',
+        effects: { stress: -10, skill: +10, money: -5 },
+        followUpText: 'El cliente se molestó un poco, pero la reunión del día siguiente fue productiva.',
+      },
+    ],
+  },
+
+  // ─── TECHNICAL (más) ───────────────────────────────────────
+  {
+    id: 'tech_outdated_deps',
+    category: 'technical',
+    title: '47 dependencias desactualizadas. 12 con vulnerabilidades críticas.',
+    body: 'El reporte de seguridad llegó por email. El cliente lo vio antes que tú.',
+    weight: 7,
+    choices: [
+      {
+        id: 'a',
+        text: 'Actualizar todo esta semana',
+        effects: { stress: +20, energy: -20, skill: +10 },
+        followUpText: 'Rompiste 3 cosas. Las arreglaste. El reporte quedó limpio.',
+      },
+      {
+        id: 'b',
+        text: 'Actualizar solo las críticas',
+        effects: { stress: +10, energy: -10, skill: +5 },
+        followUpText: 'Razonable. El cliente quedó satisfecho con la respuesta.',
+      },
+      {
+        id: 'c',
+        text: 'Marcar el reporte como "falso positivo"',
+        effects: { stress: +5, skill: -15, money: -10 },
+        followUpText: 'El auditor no estuvo de acuerdo.',
+      },
+    ],
+  },
+  {
+    id: 'tech_no_tests',
+    category: 'technical',
+    title: 'Te piden agregar tests. El código tiene 0% de cobertura.',
+    body: 'El proyecto lleva 2 años sin un solo test. El jefe dice que "ahora sí hay que hacerlo".',
+    weight: 6,
+    choices: [
+      {
+        id: 'a',
+        text: 'Estimar el tiempo real y presentarlo',
+        effects: { stress: +10, skill: +10, money: +5 },
+        requiresMinStat: { skill: 40 },
+        followUpText: 'El jefe no esperaba ese número. Pero lo aprobó.',
+      },
+      {
+        id: 'b',
+        text: 'Escribir tests superficiales rápido para "cumplir"',
+        effects: { stress: +5, skill: -10, money: -5 },
+        followUpText: '40% de cobertura. 0% de utilidad real.',
+      },
+      {
+        id: 'c',
+        text: 'Refactorizar primero para que sea testeable',
+        effects: { stress: +25, energy: -20, skill: +20 },
+        requiresMinStat: { energy: 40 },
+        followUpText: 'Tardó el doble, pero el código quedó mucho mejor.',
+      },
+    ],
+  },
+  {
+    id: 'tech_wrong_timezone',
+    category: 'technical',
+    title: 'Tu app no maneja timezones. En producción.',
+    body: 'Los usuarios de otro país ven las fechas desfasadas. Los eventos del calendario aparecen un día antes.',
+    weight: 6,
+    weekMin: 2,
+    choices: [
+      {
+        id: 'a',
+        text: 'Arreglarlo correctamente con UTC en toda la app',
+        effects: { stress: +25, energy: -20, skill: +15 },
+        requiresMinStat: { skill: 55 },
+        followUpText: 'Doloroso. Pero quedó bien. Fuiste el héroe silencioso.',
+      },
+      {
+        id: 'b',
+        text: 'Avisar a los usuarios que "es una limitación conocida"',
+        effects: { stress: +5, money: -10, skill: -5 },
+        followUpText: 'Los reviews en la tienda lo mencionan.',
+      },
+      {
+        id: 'c',
+        text: 'Agregar +1 día en el frontend como parche',
+        effects: { stress: +10, skill: -15, money: -5 },
+        followUpText: 'Funciona para el 80%. El 20% restante está confundido.',
+      },
+    ],
+  },
+
+  // ─── SOCIAL (más) ──────────────────────────────────────────
+  {
+    id: 'social_slack_mistake',
+    category: 'social',
+    title: 'Mandaste un mensaje al canal equivocado.',
+    body: 'Querías decirle algo a tu amigo sobre tu jefe. Lo mandaste al canal #general con el jefe adentro.',
+    weight: 7,
+    choices: [
+      {
+        id: 'a',
+        text: 'Borrarlo inmediatamente y pretender que nada',
+        effects: { stress: +20 },
+        followUpText: 'Todo el mundo ya lo había visto. Slack no tiene "unsend" real.',
+      },
+      {
+        id: 'b',
+        text: 'Disculparte públicamente con humor',
+        effects: { stress: +10, energy: -5 },
+        followUpText: 'El equipo se rió. Tu jefe también, pero con una sonrisa extraña.',
+      },
+      {
+        id: 'c',
+        text: 'Hablar directamente con tu jefe en privado',
+        effects: { stress: +15, skill: +10 },
+        followUpText: 'Conversación incómoda pero honesta. La respetó.',
+      },
+    ],
+  },
+  {
+    id: 'social_pair_programming',
+    category: 'social',
+    title: 'Sesión de pair programming con el dev más senior.',
+    body: 'Están mirando tu código. En tiempo real. Acabas de ver que tienes 3 `console.log` olvidados.',
+    weight: 7,
+    choices: [
+      {
+        id: 'a',
+        text: 'Borrarlos antes de que los vea',
+        effects: { stress: +10, energy: -5 },
+        followUpText: 'Los vio de todos modos. "No importa, yo también los dejo."',
+      },
+      {
+        id: 'b',
+        text: 'Reírte y borrarlo con calma',
+        effects: { stress: -5, skill: +5 },
+        followUpText: 'Le cayó bien tu actitud. Terminaron bien la sesión.',
+      },
+      {
+        id: 'c',
+        text: 'Fingir que son logs intencionales de debugging',
+        effects: { stress: +15, skill: -5 },
+        followUpText: '"¿Y qué debuggeas con console.log(\'aquí\')?"',
+      },
+    ],
+  },
+  {
+    id: 'social_new_teammate',
+    category: 'social',
+    title: 'Entra un nuevo dev al equipo. Te toca hacer onboarding.',
+    body: 'El proyecto no tiene documentación. El setup tarda 4 horas si sabes lo que haces.',
+    weight: 6,
+    choices: [
+      {
+        id: 'a',
+        text: 'Documentar el proceso mientras haces el onboarding',
+        effects: { stress: +10, energy: -15, skill: +10 },
+        followUpText: 'Dolor de corto plazo. El equipo te lo agradeció por meses.',
+      },
+      {
+        id: 'b',
+        text: 'Decirle "pregúntame si tienes dudas" y seguir con lo tuyo',
+        effects: { stress: -5, energy: +5 },
+        followUpText: 'Te preguntó 30 veces. Cada vez que estabas en flow.',
+      },
+      {
+        id: 'c',
+        text: 'Dedicarle el día completo para que arranque bien',
+        effects: { stress: +5, energy: -20, skill: +5, money: +5 },
+        followUpText: 'Arrancó bien. El jefe notó que perdiste productividad ese día.',
+      },
+    ],
+  },
+
+  // ─── CAREER (más) ──────────────────────────────────────────
+  {
+    id: 'career_conference_talk',
+    category: 'career',
+    title: 'Te invitaron a dar una charla en una conferencia de tech.',
+    body: 'El tema lo dominas. Pero son 300 personas. Y te grabaron en la última que diste tartamudeando.',
+    weight: 5,
+    weekMin: 2,
+    choices: [
+      {
+        id: 'a',
+        text: 'Aceptar y prepararte bien',
+        effects: { stress: +20, energy: -15, skill: +20, money: +10 },
+        requiresMinStat: { energy: 35 },
+        followUpText: 'Salió bien. Tres personas te escribieron por LinkedIn ese día.',
+      },
+      {
+        id: 'b',
+        text: 'Declinar educadamente',
+        effects: { stress: -10 },
+        followUpText: 'Sin estrés. Pero la oportunidad no volvió ese mes.',
+      },
+      {
+        id: 'c',
+        text: 'Aceptar y prepararte lo mínimo',
+        effects: { stress: +30, energy: -20, skill: +5 },
+        followUpText: 'La charla fue mediocre. Aprendiste qué no hacer.',
+      },
+    ],
+  },
+  {
+    id: 'career_freelance_client',
+    category: 'career',
+    title: 'Un cliente nuevo te ofrece un proyecto freelance urgente.',
+    body: 'Buena paga. Deadline apretado. Tienes trabajo full-time. El proyecto es "sencillo" (palabras del cliente).',
+    weight: 6,
+    choices: [
+      {
+        id: 'a',
+        text: 'Aceptarlo y trabajar noches y fines de semana',
+        effects: { stress: +30, energy: -25, money: +25 },
+        followUpText: 'El dinero entró. Tu cuerpo, no te lo perdonó.',
+      },
+      {
+        id: 'b',
+        text: 'Cobrar el doble por la urgencia',
+        effects: { stress: +10, money: +15, skill: +5 },
+        followUpText: 'Aceptaron. El proyecto era el doble de complejo de lo prometido.',
+      },
+      {
+        id: 'c',
+        text: 'Rechazarlo. Tienes suficiente en el plato.',
+        effects: { stress: -10, energy: +10 },
+        followUpText: 'Decisión correcta. Pudiste dormir bien esa semana.',
+      },
+    ],
+  },
+
+  // ─── RANDOM (más) ──────────────────────────────────────────
+  {
+    id: 'random_stackoverflow_down',
+    category: 'random',
+    title: 'Stack Overflow está caído.',
+    body: 'Tienes un bug que nunca habías visto. Sin Stack Overflow. Sin respuestas. Solo tú y la documentación oficial.',
+    weight: 7,
+    choices: [
+      {
+        id: 'a',
+        text: 'Leer la documentación oficial desde el principio',
+        effects: { stress: +10, energy: -15, skill: +20 },
+        requiresMinStat: { energy: 30 },
+        followUpText: 'Lo resolviste. Y ahora entiendes la librería de verdad.',
+      },
+      {
+        id: 'b',
+        text: 'Buscar en Reddit y GitHub Issues',
+        effects: { stress: +5, energy: -10, skill: +10 },
+        followUpText: 'Un issue de hace 3 años tenía exactamente tu problema.',
+      },
+      {
+        id: 'c',
+        text: 'Pausar esa tarea y hacer algo más mientras vuelve',
+        effects: { stress: -5, energy: +5 },
+        followUpText: 'Stack Overflow volvió en 2 horas. El bug también.',
+      },
+    ],
+  },
+  {
+    id: 'random_keyboard_broken',
+    category: 'random',
+    title: 'Se rompió la tecla "e" de tu teclado.',
+    body: '"e" es la letra más común del español y del inglés. Tienes un code review en 1 hora.',
+    weight: 5,
+    choices: [
+      {
+        id: 'a',
+        text: 'Usar copy-paste de una "e" de otro lado',
+        effects: { stress: +15, energy: -20 },
+        followUpText: 'Productividad: 15%. El code review lo pospusiste.',
+      },
+      {
+        id: 'b',
+        text: 'Conectar un teclado viejo de USB que tenías guardado',
+        effects: { stress: +5, energy: -5 },
+        followUpText: 'Funcionó. El teclado era de 2009 y hacía un ruido increíble.',
+      },
+      {
+        id: 'c',
+        text: 'Trabajar desde el teclado en pantalla del sistema',
+        effects: { stress: +25, energy: -25, skill: -5 },
+        followUpText: 'El peor día de tu vida profesional.',
+      },
+    ],
+  },
+  {
+    id: 'random_wrong_git_email',
+    category: 'random',
+    title: 'Llevas 2 semanas commiteando con el email equivocado.',
+    body: 'Tu git config tenía el email del trabajo anterior. Todos los commits dicen "dev@exempresa.com".',
+    weight: 5,
+    choices: [
+      {
+        id: 'a',
+        text: 'Hacer git rebase para corregir el historial',
+        effects: { stress: +15, energy: -10, skill: +10 },
+        requiresMinStat: { skill: 50 },
+        followUpText: 'Quedó limpio. Solo tardaste 1 hora y un poco de dignidad.',
+      },
+      {
+        id: 'b',
+        text: 'Dejar el historial como está y solo corregir de aquí en adelante',
+        effects: { stress: -5 },
+        followUpText: 'Nadie notó. El código funciona igual.',
+      },
+      {
+        id: 'c',
+        text: 'Borrarlo todo y hacer squash de todo en un solo commit',
+        effects: { stress: +10, skill: -10 },
+        followUpText: '"Initial commit — todo el trabajo de 2 semanas." El PM preguntó por el historial.',
+      },
+    ],
+  },
+
+  // ─── EXISTENTIAL (más) ─────────────────────────────────────
+  {
+    id: 'exist_imposter_syndrome',
+    category: 'existential',
+    title: 'Síndrome del impostor al máximo.',
+    body: 'Estás en una reunión técnica. Alguien menciona un término que no conoces. Todos asienten. Tú también asientes.',
+    weight: 8,
+    choices: [
+      {
+        id: 'a',
+        text: 'Preguntar qué significa aunque te dé vergüenza',
+        effects: { stress: +10, skill: +15, energy: -5 },
+        followUpText: 'Dos personas más también lo preguntaron. Todos lo agradecieron.',
+      },
+      {
+        id: 'b',
+        text: 'Buscarlo en Google durante la reunión',
+        effects: { stress: +5, skill: +5 },
+        followUpText: 'Lo entendiste a medias. Suficiente para no perderte lo que siguió.',
+      },
+      {
+        id: 'c',
+        text: 'Seguir asintiendo y aprenderlo después',
+        effects: { stress: +15, skill: -5 },
+        followUpText: 'Lo olvidaste. El término apareció de nuevo en 2 días.',
+      },
+    ],
+  },
+  {
+    id: 'exist_work_life_balance',
+    category: 'existential',
+    title: 'Tu familia no sabe en qué trabajas exactamente.',
+    body: 'En la cena te preguntaron de nuevo. La última vez que intentaste explicarlo alguien sacó el celular.',
+    weight: 5,
+    choices: [
+      {
+        id: 'a',
+        text: 'Intentar explicarlo con una analogía simple',
+        effects: { stress: -10, energy: +5 },
+        followUpText: '"Ah, como los de la tele que hackean en 30 segundos." — Sí. Exactamente.',
+      },
+      {
+        id: 'b',
+        text: 'Decir "arreglo computadoras" y cambiar el tema',
+        effects: { stress: -15, energy: +10 },
+        followUpText: 'Tu tía te preguntó si puedes arreglarle su impresora.',
+      },
+      {
+        id: 'c',
+        text: 'Explicar todo con detalle técnico completo',
+        effects: { stress: +10, energy: -10, skill: +5 },
+        followUpText: 'Todos se fueron a ver el partido. Terminaste solo con el perro.',
+      },
+    ],
+  },
 ];

@@ -1,0 +1,103 @@
+import { Achievement } from '../types/achievements';
+
+export const ACHIEVEMENTS: Achievement[] = [
+  {
+    id: 'first_blood',
+    emoji: '🩸',
+    title: 'Primera víctima',
+    description: 'Completa tu primera partida (aunque sea con Game Over).',
+    check: (_run, allRuns) => allRuns.length >= 1,
+  },
+  {
+    id: 'survivor',
+    emoji: '🏆',
+    title: 'Sobreviviente',
+    description: 'Completa un mes completo sin morir.',
+    check: (run) => run.outcome === 'survived',
+  },
+  {
+    id: 'burnout_king',
+    emoji: '🔥',
+    title: 'Rey del Burnout',
+    description: 'Muere de burnout 3 veces.',
+    check: (_run, allRuns) =>
+      allRuns.filter((r) => r.outcome === 'burnout').length >= 3,
+  },
+  {
+    id: 'ai_replaced',
+    emoji: '🤖',
+    title: 'Obsoleto',
+    description: 'Ser reemplazado por la IA.',
+    check: (run) => run.outcome === 'replaced_by_ai',
+  },
+  {
+    id: 'high_scorer',
+    emoji: '💯',
+    title: 'Crack del equipo',
+    description: 'Termina con score mayor a 500.',
+    check: (run) => (run.score ?? 0) >= 500,
+  },
+  {
+    id: 'zen_master',
+    emoji: '🧘',
+    title: 'Zen Total',
+    description: 'Termina una partida con estrés menor a 20.',
+    check: (run) => run.outcome === 'survived' && run.stats.stress < 20,
+  },
+  {
+    id: 'broke',
+    emoji: '💸',
+    title: 'Freelancer sin clientes',
+    description: 'Quédate sin dinero.',
+    check: (run) => run.outcome === 'fired',
+  },
+  {
+    id: 'tenacious',
+    emoji: '💪',
+    title: 'Incansable',
+    description: 'Juega 10 partidas.',
+    check: (_run, allRuns) => allRuns.length >= 10,
+  },
+  {
+    id: 'skill_maxed',
+    emoji: '🧠',
+    title: 'Senior Developer',
+    description: 'Llega al final con skill mayor a 90.',
+    check: (run) => run.outcome === 'survived' && run.stats.skill >= 90,
+  },
+  {
+    id: 'energy_zero',
+    emoji: '😴',
+    title: '"Ya renuncio"',
+    description: 'Renuncia por agotamiento.',
+    check: (run) => run.outcome === 'quit',
+  },
+  {
+    id: 'pm_survivor',
+    emoji: '📋',
+    title: 'PM Indestructible',
+    description: 'Sobrevive como Product Manager.',
+    check: (run) => run.outcome === 'survived' && run.role === 'pm',
+  },
+  {
+    id: 'speedrun',
+    emoji: '⚡',
+    title: 'Speedrunner',
+    description: 'Completa 5 partidas.',
+    check: (_run, allRuns) => allRuns.length >= 5,
+  },
+  {
+    id: 'filthy_rich',
+    emoji: '🤑',
+    title: 'Dinero no es problema',
+    description: 'Termina con dinero mayor a 90.',
+    check: (run) => run.outcome === 'survived' && run.stats.money >= 90,
+  },
+  {
+    id: 'legacy_survivor',
+    emoji: '🏚️',
+    title: 'Arqueólogo de código',
+    description: 'Sobrevive habiendo visto el evento de código legacy.',
+    check: (run) => run.outcome === 'survived' && run.eventHistory.includes('tech_legacy_code'),
+  },
+];

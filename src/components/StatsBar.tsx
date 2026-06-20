@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { Stats } from '../types';
 
 type Props = { stats: Stats; week: number };
@@ -8,9 +9,9 @@ export default function StatsBar({ stats, week }: Props) {
     <View style={styles.container}>
       <Text style={styles.week}>Semana {week} / 4</Text>
       <View style={styles.row}>
-        <StatItem emoji="😰" value={stats.stress} danger highIsBad />
-        <StatItem emoji="💵" value={stats.money} danger={stats.money < 25} />
-        <StatItem emoji="⚡" value={stats.energy} danger={stats.energy < 20} />
+        <StatItem emoji="😰" value={stats.stress} highIsBad />
+        <StatItem emoji="💵" value={stats.money} lowIsBad />
+        <StatItem emoji="⚡" value={stats.energy} lowIsBad />
         <StatItem emoji="🧠" value={stats.skill} />
       </View>
     </View>
@@ -18,21 +19,57 @@ export default function StatsBar({ stats, week }: Props) {
 }
 
 function StatItem({
-  emoji, value, danger, highIsBad,
+  emoji, value, highIsBad, lowIsBad,
 }: {
-  emoji: string; value: number; danger?: boolean; highIsBad?: boolean;
+  emoji: string; value: number; highIsBad?: boolean; lowIsBad?: boolean;
 }) {
-  const bad = highIsBad ? value > 70 : danger;
-  const barColor = bad ? '#e53935' : value > 50 ? '#43a047' : '#fb8c00';
+  const anim = useRef(new Animated.Value(value)).current;
+  const flashAnim = useRef(new Animated.Value(1)).current;
+  const prevValue = useRef(value);
+
+  useEffect(() => {
+    if (prevValue.current === value) return;
+
+    // Flash effect on change
+    Animated.sequence([
+      Animated.timing(flashAnim, { toValue: 0.3, duration: 80, useNativeDriver: true }),
+      Animated.timing(flashAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+    ]).start();
+
+    // Animated bar width
+    Animated.spring(anim, {
+      toValue: value,
+      tension: 60,
+      friction: 8,
+      useNativeDriver: false,
+    }).start();
+
+    prevValue.current = value;
+  }, [value]);
+
+  const isDanger = highIsBad ? value > 70 : lowIsBad ? value < 25 : false;
+  const barColor = isDanger
+    ? '#e53935'
+    : highIsBad
+    ? value > 40 ? '#fb8c00' : '#43a047'
+    : value < 40 ? '#fb8c00' : '#43a047';
+
+  const barWidth = anim.interpolate({
+    inputRange: [0, 100],
+    outputRange: ['0%', '100%'],
+    extrapolate: 'clamp',
+  });
 
   return (
-    <View style={styles.stat}>
+    <Animated.View style={[styles.stat, { opacity: flashAnim }]}>
       <Text style={styles.emoji}>{emoji}</Text>
       <View style={styles.barBg}>
-        <View style={[styles.barFill, { width: `${value}%` as any, backgroundColor: barColor }]} />
+        <Animated.View
+          style={[styles.barFill, { width: barWidth, backgroundColor: barColor }]}
+        />
       </View>
-      <Text style={[styles.val, bad && styles.valDanger]}>{value}</Text>
-    </View>
+      <Text style={[styles.val, isDanger && styles.valDanger]}>{value}</Text>
+    </Animated.View>
   );
 }
 

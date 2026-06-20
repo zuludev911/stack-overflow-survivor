@@ -53,6 +53,15 @@ export default function HomeScreen() {
           </Text>
         </Pressable>
 
+        <View style={styles.secondaryBtns}>
+          <Pressable style={styles.secondaryBtn} onPress={() => router.push('/history')}>
+            <Text style={styles.secondaryBtnText}>📋 Historial</Text>
+          </Pressable>
+          <Pressable style={styles.secondaryBtn} onPress={() => router.push('/achievements')}>
+            <Text style={styles.secondaryBtnText}>🏅 Logros</Text>
+          </Pressable>
+        </View>
+
         <Text style={styles.hint}>Basado en eventos reales de desarrolladores reales.</Text>
       </ScrollView>
     </SafeAreaView>
@@ -88,5 +97,11 @@ const styles = StyleSheet.create({
   btnText: { fontSize: 16, fontWeight: '700', color: '#fff' },
   btnSecondary: { backgroundColor: '#1e2a3a' },
   btnSecondaryText: { fontSize: 16, fontWeight: '700', color: '#5bc4ff' },
+  secondaryBtns: { flexDirection: 'row', gap: 10, width: '100%', marginBottom: 4 },
+  secondaryBtn: {
+    flex: 1, backgroundColor: '#1a1a2e', borderRadius: 12,
+    paddingVertical: 12, alignItems: 'center',
+  },
+  secondaryBtnText: { fontSize: 13, fontWeight: '600', color: '#888' },
   hint: { fontSize: 11, color: '#444', marginTop: 24, textAlign: 'center' },
 });
