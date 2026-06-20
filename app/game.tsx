@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, ScrollView, Alert } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
+import { View, Text, Pressable, StyleSheet, ScrollView, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { EVENTS } from '../src/data/events';
@@ -17,11 +17,15 @@ const CATEGORY_EMOJI: Record<string, string> = {
   social: '📅', career: '🎯', random: '☕', existential: '🤖',
 };
 
+const NEXT_DELAY = 3000;
+
 export default function GameScreen() {
   const [run, setRun] = useState<Run | null>(null);
   const [event, setEvent] = useState<GameEvent | null>(null);
   const [followUp, setFollowUp] = useState<string | null>(null);
   const [chosenId, setChosenId] = useState<string | null>(null);
+  const progressAnim = useRef(new Animated.Value(0)).current;
+  const progressAnim2 = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     loadCurrentRun().then((r) => {
@@ -48,6 +52,21 @@ export default function GameScreen() {
       if (rand <= 0) return pool[i];
     }
     return pool[pool.length - 1];
+  }
+
+  function startProgressBar(onDone: () => void) {
+    progressAnim.setValue(0);
+    progressAnim2.setValue(0);
+    // first bar: fills quickly as "reading time"
+    Animated.sequence([
+      Animated.timing(progressAnim, {
+        toValue: 1, duration: NEXT_DELAY - 400, useNativeDriver: false, delay: 400,
+      }),
+    ]).start();
+    // second delayed bar triggers navigation
+    Animated.timing(progressAnim2, {
+      toValue: 1, duration: NEXT_DELAY, useNativeDriver: false,
+    }).start(({ finished }) => { if (finished) onDone(); });
   }
 
   async function handleChoice(choice: Choice) {
@@ -77,15 +96,19 @@ export default function GameScreen() {
       const score = calculateScore({ ...updatedRun, outcome });
       const finalRun: Run = { ...updatedRun, outcome, score };
       await completeRun(finalRun);
-      setTimeout(() => router.replace({ pathname: '/result', params: { outcome, score: String(score) } }), 1200);
+      startProgressBar(() =>
+        router.replace({ pathname: '/result', params: { outcome, score: String(score) } })
+      );
     } else {
       await saveCurrentRun(updatedRun);
-      setTimeout(() => {
+      startProgressBar(() => {
         setRun(updatedRun);
         setEvent(pickEvent(updatedRun));
         setChosenId(null);
         setFollowUp(null);
-      }, 1200);
+        progressAnim.setValue(0);
+        progressAnim2.setValue(0);
+      });
     }
   }
 
@@ -114,6 +137,19 @@ export default function GameScreen() {
           {followUp && (
             <View style={styles.followUpBox}>
               <Text style={styles.followUpText}>{followUp}</Text>
+              <View style={styles.nextBarBg}>
+                <Animated.View
+                  style={[
+                    styles.nextBarFill,
+                    {
+                      width: progressAnim.interpolate({
+                        inputRange: [0, 1], outputRange: ['0%', '100%'],
+                      }),
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={styles.nextLabel}>Siguiente evento...</Text>
             </View>
           )}
         </View>
@@ -184,8 +220,11 @@ const styles = StyleSheet.create({
   categoryLabel: { fontSize: 10, fontWeight: '700', color: '#888', letterSpacing: 1.5 },
   eventTitle: { fontSize: 18, fontWeight: '800', color: '#fff', lineHeight: 24, marginBottom: 8 },
   eventBody: { fontSize: 13, color: '#aaa', lineHeight: 20 },
-  followUpBox: { marginTop: 14, backgroundColor: '#0f0f1a', borderRadius: 10, padding: 12 },
+  followUpBox: { marginTop: 14, backgroundColor: '#0f0f1a', borderRadius: 10, padding: 12, gap: 10 },
   followUpText: { fontSize: 13, color: '#5bc4ff', fontStyle: 'italic' },
+  nextBarBg: { height: 3, backgroundColor: '#2a2a3a', borderRadius: 2, overflow: 'hidden' },
+  nextBarFill: { height: '100%', backgroundColor: '#5bc4ff', borderRadius: 2 },
+  nextLabel: { fontSize: 10, color: '#444', textAlign: 'right', letterSpacing: 0.5 },
 
   choices: { gap: 10 },
   choice: {
