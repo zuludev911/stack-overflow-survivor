@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name": "stack-overflow-survivor",
+    "name": "Stack Overflow Survivor",
     "slug": "stack-overflow-survivor",
     "version": "1.0.0",
+    "scheme": "sos",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "plugins": ["expo-router"],
     "ios": {
       "supportsTablet": true
     },
