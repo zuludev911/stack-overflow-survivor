@@ -3,6 +3,7 @@ import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { loadLifetimeStats, loadCurrentRun } from '../src/store/gameStore';
+import { loadGender } from '../src/store/characterStore';
 import { LifetimeStats } from '../src/types';
 
 export default function HomeScreen() {
@@ -11,12 +12,15 @@ export default function HomeScreen() {
 
   useEffect(() => {
     (async () => {
-      const [lifetime, current] = await Promise.all([
+      const [lifetime, current, gender] = await Promise.all([
         loadLifetimeStats(),
         loadCurrentRun(),
+        loadGender(),
       ]);
       setStats(lifetime);
       setHasActiveRun(current !== null);
+      // First time: redirect to character select
+      if (!gender) router.replace('/character-select');
     })();
   }, []);
 
