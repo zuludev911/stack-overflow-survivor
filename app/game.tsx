@@ -62,9 +62,13 @@ export default function GameScreen() {
 
   function pickEvent(r: Run): GameEvent {
     const role = ROLES.find((rl) => rl.id === r.role)!;
-    const pool = EVENTS.filter(
+    let pool = EVENTS.filter(
       (e) => !r.eventHistory.includes(e.id) && (e.weekMin ?? 1) <= r.week
     );
+    // Si ya se vieron todos los eventos, reinicia el historial
+    if (pool.length === 0) {
+      pool = EVENTS.filter((e) => (e.weekMin ?? 1) <= r.week);
+    }
     const weights = pool.map((e) => e.weight * (role.eventWeights[e.category] ?? 1));
     const total = weights.reduce((a, b) => a + b, 0);
     let rand = Math.random() * total;
